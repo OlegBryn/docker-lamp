@@ -10,4 +10,7 @@ docker-compose up --build -d
 ```
 Environment builds with default configuration. 
 
-To set your own config rename `sample.env` to `.env` and set required values in it.
+To change default values, you should set required params in `sample.env` file and rename it to `.env` BEFORE building or RESTART else.
+```
+docker-compose restart webserver mysql
+```
