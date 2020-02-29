@@ -8,14 +8,17 @@ services:
     container_name: 'webserver'
     restart: 'always'
     ports:
-      - '80:80'
-      - '443:443'
+      - 80:80
+      - 8080:8080
+      - 443:443
+      - 10000:10000
     links:
       - mysql
     volumes:
       - ${DOCUMENT_ROOT-./www}:/var/www
       - ${PHP_INI_DIR-./env/config/php/php.ini}:/usr/local/etc/php/php.ini
       - ${VHOSTS_DIR-./env/config/vhosts}:/etc/apache2/sites-enabled
+      - ${SSL_DIR-./env/config/ssl}:/etc/apache2/ssl/
       - ${APACHE_LOG_DIR-./env/logs/apache2}:/var/log/apache2
 
   mysql:
