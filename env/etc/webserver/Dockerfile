@@ -4,10 +4,12 @@ RUN apt-get -y update
 RUN apt-get -y upgrade
 
 # Important Libraries
-RUN apt-get install -y apt-utils build-essential git curl libcurl4 libcurl4-gnutls-dev libzip-dev zip unzip
+RUN apt-get install -y apt-utils build-essential git curl libcurl4 zip unzip software-properties-common
 
 # Composer
-COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
+RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && \
+    php composer-setup.php --install-dir=/usr/local/bin --filename=composer && \
+    php -r "unlink('composer-setup.php');"
 
 # PHP Extensions
 RUN apt-get install -y libmcrypt-dev
@@ -24,5 +26,14 @@ RUN apt-get -y install libicu-dev
 RUN docker-php-ext-install -j$(nproc) intl
 RUN docker-php-ext-install mbstring
 
+# Install Webmin
+RUN echo "deb http://download.webmin.com/download/repository sarge contrib"  >> /etc/apt/sources.list.d/webmin.list && \
+    wget http://www.webmin.com/jcameron-key.asc && \
+    apt-key add jcameron-key.asc && \
+    apt-get update && \
+    apt-get install webmin
+
 # Enable Apache Modules
 RUN a2enmod rewrite headers
+
+EXPOSE 80 8080 443 10000
